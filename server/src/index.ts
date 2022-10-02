@@ -4,6 +4,7 @@ import express, { Response,Request, NextFunction } from 'express';
 import logger from './utils/logger'
 import ExpressError from './utils/expressError';
 import { StatusCodes } from 'http-status-codes';
+import userRoute from './modules/user/user.route';
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -12,10 +13,7 @@ const PORT = process.env.PORT || 3000;
 app.get('/healthcheck', (req : Request, res : Response) => {
     res.send('ok');
 })
-app.post('/api/users/register', (req : Request , res : Response) => {
-
-    res.send(req.body)
-})
+app.use('/api/users',userRoute)
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
     return next(new ExpressError('Not Found', StatusCodes.NOT_FOUND))
 })
