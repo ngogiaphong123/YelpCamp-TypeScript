@@ -16,6 +16,8 @@ model User {
     salt String
     password String
     campgrounds Campground[]
+    sessions Session[]
+    reviews Review[]
 }
 
 model Campground {
@@ -27,4 +29,25 @@ model Campground {
     updatedAt DateTime @updatedAt
     author User @relation(fields: [authorId], references: [id])
     authorId String
+    reviews Review[]
+}
+
+model Session {
+    id String @id @default(uuid())
+    user User @relation(fields: [userId], references: [id])
+    userId String
+    valid Boolean @default(true)
+    userAgent String
+}
+
+model Review {
+    id String @id @default(uuid())
+    rating Int
+    body String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    author User @relation(fields: [authorId], references: [id])
+    authorId String
+    campground Campground @relation(fields: [campgroundId], references: [id])
+    campgroundId String
 }
