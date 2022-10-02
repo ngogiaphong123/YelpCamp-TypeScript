@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config();
 
 export const signJwt = (payload: Object, options?: jwt.SignOptions | undefined): string => {
-    const privateKey = process.env.privateKey as string
+    const privateKey = process.env.PRIVATE_KEY as string
     return jwt.sign(payload, privateKey, {
         ...(options && options),
         algorithm: 'RS256'
@@ -11,7 +11,7 @@ export const signJwt = (payload: Object, options?: jwt.SignOptions | undefined):
 }
 
 export const verifyJwt = (token: string) => {
-    const publicKey = process.env.publicKey as string
+    const publicKey = process.env.PUBLIC_KEY as string
     try {
         const decoded = jwt.verify(token, publicKey);
         return {
