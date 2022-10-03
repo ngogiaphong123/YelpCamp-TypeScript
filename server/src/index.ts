@@ -7,6 +7,7 @@ import ExpressError from './utils/expressError';
 import { StatusCodes } from 'http-status-codes';
 import userRoute from './modules/user/user.route';
 import deserializeUser from './middlewares/deserializeUser';
+import campgroundRoute from './modules/campground/campground.route';
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -17,6 +18,7 @@ app.get('/healthcheck', (req : Request, res : Response) => {
     res.send('ok');
 })
 app.use('/api/users',userRoute)
+app.use('/api/campgrounds',campgroundRoute)
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
     return next(new ExpressError('Not Found', StatusCodes.NOT_FOUND))
 })

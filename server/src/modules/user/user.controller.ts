@@ -27,7 +27,6 @@ export const loginUserController = async (req: Request<{}, {}, loginUserInput>, 
     const { password, salt, ...rest } = user;
     const accessTokenTtl = "15m";
     const refreshTokenTtl = "1d";
-    console.log(accessTokenTtl, refreshTokenTtl);
     const session = await createSession(user.id, req.get('user-agent') || '');
     const accessToken = signJwt(
         { sessionId: session.id, ...rest },
