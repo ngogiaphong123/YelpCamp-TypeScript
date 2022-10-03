@@ -41,3 +41,19 @@ export const updateCampground = async (input : createCampgroundInput & {campgrou
     })
     return campground;
 }
+
+export const deleteCampground = async (campgroundId : string) => {
+    return await prisma.campground.delete({
+        where : {
+            id : campgroundId
+        }
+    })
+}
+
+export const getCampgroundById = async (campgroundId : string) => {
+    return await prisma.campground.findUnique({
+        where : {
+            id : campgroundId
+        }
+    })
+}

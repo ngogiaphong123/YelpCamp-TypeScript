@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { createCampgroundInput, updateCampgroundInput, updateCampgroundParamsInput } from "./campground.schema";
-import { createCampground, getAllCampground, getCurrentUserCampground, updateCampground } from "./campground.service";
-
+import { createCampground, deleteCampground, getAllCampground, getCampgroundById, getCurrentUserCampground, updateCampground } from "./campground.service";
 export const createCampgroundController = async (req: Request<{}, {}, createCampgroundInput>, res: Response, next: NextFunction) => {
     const authorId = res.locals.user.id
     const campground = await createCampground({ ...req.body, authorId })
@@ -22,9 +21,33 @@ export const getCurrentUserCampgroundController = async (req: Request, res: Resp
 export const updateCampgroundController = async (req: Request<updateCampgroundParamsInput,{},updateCampgroundInput>, res: Response, next: NextFunction) => {
     const authorId = res.locals.user.id;
     const campgroundId = req.params.campgroundId;
-    const campground = await updateCampground({ ...req.body, campgroundId });
-    if(authorId !== campground.authorId) {
-        return res.status(StatusCodes.UNAUTHORIZED).send('Unauthorized');
+    const candidateCampground = await getCampgroundById(campgroundId);
+    if (!candidateCampground) {
+        return next({
+            status: StatusCodes.NOT_FOUND,
+            message: "Campground not found"
+        })
     }
-    res.status(StatusCodes.OK).send(campground);
+    if (candidateCampground.authorId !== authorId) {
+        return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
+    }
+    const newCampground = await updateCampground({ ...req.body, campgroundId });
+    res.status(StatusCodes.OK).send(newCampground);
+}
+
+export const deleteCampgroundController = async (req: Request<updateCampgroundParamsInput,{},{}>, res: Response, next: NextFunction) => {
+    const authorId = res.locals.user.id;
+    const campgroundId = req.params.campgroundId;
+    const candidateCampground = await getCampgroundById(campgroundId);
+    if (!candidateCampground) {
+        return next({
+            status: StatusCodes.NOT_FOUND,
+            message: "Campground not found"
+        })
+    }
+    if (candidateCampground.authorId !== authorId) {
+        return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
+    }
+    await deleteCampground(campgroundId);
+    res.status(StatusCodes.NO_CONTENT).send("Deleted");
 }
