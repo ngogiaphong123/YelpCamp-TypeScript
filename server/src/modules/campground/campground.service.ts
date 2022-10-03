@@ -14,3 +14,30 @@ export const createCampground = async (input : createCampgroundInput & {authorId
     })
     return newCampground;
 }
+
+export const getAllCampground = async () => {
+    return await prisma.campground.findMany({});
+}
+export const getCurrentUserCampground = async (authorId : string) => {
+    return await prisma.campground.findMany({
+        where : {
+            authorId
+        }
+    })
+}
+
+export const updateCampground = async (input : createCampgroundInput & {campgroundId : string}) => {
+    const campground = await prisma.campground.update({
+        where : {
+            id : input.campgroundId,
+        },
+        data : {
+            title : input.title,
+            location : input.location,
+            image : input.image,
+            price : input.price,
+            description : input.description
+        }
+    })
+    return campground;
+}
