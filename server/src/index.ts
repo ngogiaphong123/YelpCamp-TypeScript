@@ -8,6 +8,7 @@ import { StatusCodes } from 'http-status-codes';
 import userRoute from './modules/user/user.route';
 import deserializeUser from './middlewares/deserializeUser';
 import campgroundRoute from './modules/campground/campground.route';
+import reviewRoute from './modules/review/review.route';
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -19,6 +20,7 @@ app.get('/healthcheck', (req : Request, res : Response) => {
 })
 app.use('/api/users',userRoute)
 app.use('/api/campgrounds',campgroundRoute)
+app.use('/api/campgrounds/:campgroundId/reviews',reviewRoute)
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
     return next(new ExpressError('Not Found', StatusCodes.NOT_FOUND))
 })

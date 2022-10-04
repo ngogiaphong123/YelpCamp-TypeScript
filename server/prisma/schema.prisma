@@ -29,7 +29,7 @@ model Campground {
     description String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    author User @relation(fields: [authorId], references: [id])
+    author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId String
     reviews Review[]
 }
@@ -45,11 +45,11 @@ model Session {
 model Review {
     id String @id @default(uuid())
     rating Int
-    body String
+    content String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     author User @relation(fields: [authorId], references: [id])
     authorId String
-    campground Campground @relation(fields: [campgroundId], references: [id])
+    campground Campground @relation(fields: [campgroundId], references: [id], onDelete: Cascade)
     campgroundId String
 }
