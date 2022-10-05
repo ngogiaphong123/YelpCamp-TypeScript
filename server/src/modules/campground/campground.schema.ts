@@ -6,10 +6,7 @@ const campgroundCore = {
     location : z.string({
         required_error : 'Location is required'
     }),
-    image : z.string({
-        required_error : 'Image is required'
-    }),
-    price : z.number({
+    price : z.string({
         required_error : 'Price is required'
     }),
     description : z.string({

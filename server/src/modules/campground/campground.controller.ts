@@ -2,9 +2,26 @@ import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { createCampgroundInput, updateCampgroundInput, updateCampgroundParamsInput } from "./campground.schema";
 import { createCampground, deleteCampground, getAllCampground, getCampgroundById, getCurrentUserCampground, updateCampground } from "./campground.service";
+import { prisma } from "../../utils/prisma";
 export const createCampgroundController = async (req: Request<{}, {}, createCampgroundInput>, res: Response, next: NextFunction) => {
     const authorId = res.locals.user.id
+    if(!req.files){
+        return res.status(StatusCodes.BAD_REQUEST).send({
+            message : 'Image is required'
+        })
+    }
     const campground = await createCampground({ ...req.body, authorId })
+    const {...images} = req.files
+    const imageUrls = Object.values(images).map((image : any) => ({url : image.path , filename : image.filename}))
+    for(let image of imageUrls){
+        await prisma.image.create({
+            data : {
+                url : image.url,
+                filename : image.filename,
+                campgroundId : campground.id
+            }
+        })
+    }
     res.status(StatusCodes.CREATED).send(campground);
 }
 export const getAllCampgroundController = async (req: Request, res: Response, next: NextFunction) => {

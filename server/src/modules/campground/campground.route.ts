@@ -4,10 +4,12 @@ import requireUser from '../../middlewares/requireUser';
 import catchAsync from '../../utils/catchAsync';
 import { createCampgroundController, deleteCampgroundController, getAllCampgroundController, getCurrentUserCampgroundController, updateCampgroundController } from './campground.controller';
 import { createCampgroundSchema, updateCampgroundParamsSchema, updateCampgroundSchema,  } from './campground.schema';
-
+import multer from 'multer';
+import cloudinary , {storage} from '../../../cloudinary';
+const upload = multer({storage});
 const campgroundRoute = express.Router();
-
-campgroundRoute.post('/', requireUser, processRequestBody(createCampgroundSchema), catchAsync(createCampgroundController))
+//processRequestBody(createCampgroundSchema)
+campgroundRoute.post('/', requireUser,upload.array('image',5), processRequestBody(createCampgroundSchema),catchAsync(createCampgroundController))
 campgroundRoute.get('/', catchAsync(getAllCampgroundController))
 campgroundRoute.get('/me', requireUser, catchAsync(getCurrentUserCampgroundController))
 campgroundRoute.put('/:campgroundId', 

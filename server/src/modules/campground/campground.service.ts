@@ -6,7 +6,6 @@ export const createCampground = async (input : createCampgroundInput & {authorId
         data : {
             title : input.title,
             location : input.location,
-            image : input.image,
             price : input.price,
             authorId : input.authorId,
             description : input.description
@@ -16,12 +15,31 @@ export const createCampground = async (input : createCampgroundInput & {authorId
 }
 
 export const getAllCampground = async () => {
-    return await prisma.campground.findMany({});
+    return await prisma.campground.findMany({
+        include : {
+            author : {
+                select : {
+                    username : true
+                }
+            },
+            images : true,
+            reviews : true
+        }
+    });
 }
 export const getCurrentUserCampground = async (authorId : string) => {
     return await prisma.campground.findMany({
         where : {
             authorId
+        },
+        include : {
+            author : {
+                select : {
+                    username : true
+                }
+            },
+            images : true,
+            reviews : true
         }
     })
 }
@@ -34,7 +52,6 @@ export const updateCampground = async (input : createCampgroundInput & {campgrou
         data : {
             title : input.title,
             location : input.location,
-            image : input.image,
             price : input.price,
             description : input.description
         }

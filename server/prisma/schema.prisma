@@ -24,14 +24,14 @@ model Campground {
     title String
     location String
     id String @id @default(uuid())
-    image String
-    price Int
+    price String
     description String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId String
     reviews Review[]
+    images Image[]
 }
 
 model Session {
@@ -50,6 +50,14 @@ model Review {
     updatedAt DateTime @updatedAt
     author User @relation(fields: [authorId], references: [id])
     authorId String
+    campground Campground @relation(fields: [campgroundId], references: [id], onDelete: Cascade)
+    campgroundId String
+}
+
+model Image {
+    id String @id @default(uuid())
+    url String
+    filename String
     campground Campground @relation(fields: [campgroundId], references: [id], onDelete: Cascade)
     campgroundId String
 }
