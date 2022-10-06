@@ -71,6 +71,15 @@ export const getCampgroundById = async (campgroundId : string) => {
     return await prisma.campground.findUnique({
         where : {
             id : campgroundId
+        },
+        include : {
+            author : {
+                select : {
+                    username : true
+                }
+            },
+            images : true,
+            reviews : true
         }
     })
 }

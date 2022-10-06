@@ -68,3 +68,18 @@ export const deleteCampgroundController = async (req: Request<updateCampgroundPa
     await deleteCampground(campgroundId);
     res.status(StatusCodes.NO_CONTENT).send("Deleted");
 }
+
+export const getCampgroundByIdController = async (req: Request<updateCampgroundParamsInput,{},{}>, res: Response, next: NextFunction) => {
+    const userId = res.locals.user.id;
+    const campground = await getCampgroundById(req.params.campgroundId);
+    if (!campground) {
+        return next({
+            status: StatusCodes.NOT_FOUND,
+            message: "Campground not found"
+        })
+    }
+    if(campground.authorId !== userId){
+        return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
+    }
+    res.status(StatusCodes.OK).send(campground);
+}
